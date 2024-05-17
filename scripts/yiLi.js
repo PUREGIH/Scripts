@@ -84,6 +84,9 @@ const body = {
       if ($.userInfo.aspnetUserId) {
         if ($.setdata(JSON.stringify($.users), $.COOKIES_KEY)) {
           $.subt = `获取会话: 成功!`;
+
+          let cookieValues = JSON.stringify($.users, null, 2);
+          $.msg("Cookie Values:", cookieValues); 
         } else {
           $.subt = `获取会话: 失败!`;
         }
@@ -701,8 +704,6 @@ function getUserInfo() {
           ...$.userInfo,
           ...data,
         };
-
-        $.log(`cookies: ${JSON.stringify($.users)}`);
 
       } catch (e) {
         $.logErr(e, resp);
