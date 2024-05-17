@@ -9,17 +9,10 @@
 
 hostname = club.yili.com
 
-# Surge
-伊利乳品 = type=http-request, requires-body=1, pattern=https:\/\/club\.yili\.com\/MALLIFChe\/MCSWSIAPI\.asmx\/Call,script-path=https://raw.githubusercontent.com/FoKit/Scripts/main/scripts/yiLi.js
-伊利乳品 = type=cron,cronexp=10 0 * * *,script-path=https://raw.githubusercontent.com/FoKit/Scripts/main/scripts/yiLi.js,wake-system=true
-
 # QuanX
 https:\/\/club\.yili\.com\/MALLIFChe\/MCSWSIAPI\.asmx\/Call url script-request-body https://raw.githubusercontent.com/PUREGIH/Scripts/main/scripts/yiLi.js
-10 0 * * * https://raw.githubusercontent.com/FoKit/Scripts/main/scripts/yiLi.js, tag=伊利乳品, img-url=https://raw.githubusercontent.com/id77/QuantumultX/master/icon/yiLi.png
+10 0 * * * https://raw.githubusercontent.com/PUREGIH/Scripts/main/scripts/yiLi.js, tag=伊利乳品, img-url=https://raw.githubusercontent.com/id77/QuantumultX/master/icon/yiLi.png
 
-# Loon
-http-request https:\/\/club\.yili\.com\/MALLIFChe\/MCSWSIAPI\.asmx\/Call script-path=https://raw.githubusercontent.com/FoKit/Scripts/main/scripts/yiLi.js, requires-body=true,
-cron "10 0 * * *" script-path=https://raw.githubusercontent.com/FoKit/Scripts/main/scripts/yiLi.js
 
  */
 
