@@ -1083,14 +1083,21 @@
       "id": "wechat_pay_coupon",
       "name": "微信支付有优惠",
       "author": "@FoKit",
-      "script": "https://raw.githubusercontent.com/FoKit/Scripts/main/scripts/wechat_pay_coupon.js",
+      "script": "https://raw.githubusercontent.com/PUREGIH/Scripts/refs/heads/main/scripts/wechat_pay_coupon.js",
       "repo": "",
       "icons": [
         "https://raw.githubusercontent.com/FoKit/Scripts/main/images/wechat_pay_coupon.png",
         "https://raw.githubusercontent.com/FoKit/Scripts/main/images/wechat_pay_coupon.png"
       ],
       "descs_html": ["微信支付有优惠 - 领金币"],
-      "keys": ["wechat_pay_token", "wechat_pay_version", "wechat_pay_exchange"],
+      "keys": [
+        "wechat_pay_token",
+        "wechat_pay_version",
+        "wechat_pay_exchange",
+        "wechat_pay_exchange_award",
+        "luflytoken",
+        "CODESERVER_ADDRESS"
+      ],
       "settings": [
         {
           "id": "wechat_pay_token",
@@ -1113,7 +1120,35 @@
           "name": "兑换好礼",
           "val": false,
           "type": "boolean",
-          "desc": "每日使用1积分兑换好礼, 获得补贴金"
+          "desc": "兑换立减金"
+        },
+        {
+          "id": "wechat_pay_exchange_award",
+          "name": "兑换信息",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "wechat_pay_exchange",
+          "name": "兑换好礼",
+          "val": false,
+          "type": "boolean",
+          "desc": "兑换立减金"
+        },
+        {
+          "id": "luflytoken",
+          "name": "token",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "CODESERVER_ADDRESS",
+          "name": "获取微信code地址",
+          "val": "",
+          "type": "text",
+          "desc": ""
         }
       ]
     },
