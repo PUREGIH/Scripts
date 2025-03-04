@@ -1138,14 +1138,7 @@
         },
         {
           "id": "luflytoken",
-          "name": "token",
-          "val": "",
-          "type": "text",
-          "desc": ""
-        },
-        {
-          "id": "CODESERVER_ADDRESS",
-          "name": "获取微信code地址",
+          "name": "luflytoken",
           "val": "",
           "type": "text",
           "desc": ""

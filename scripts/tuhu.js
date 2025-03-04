@@ -63,13 +63,17 @@ script-providers:
  */
 
 const $ = new Env('途虎养车');
-$.is_debug = ($.isNode() ? process.env['IS_DEDUG'] : $.getdata('is_debug')) || 'false';  // 调试模式
+$.is_debug = ($.isNode() ? process.env['IS_DEDUG'] : $.getdata('is_debug')) || 'true';  // 调试模式
 $.token = ($.isNode() ? process.env['TUHU_TOKEN'] : $.getdata('tuhu_token')) || '';  // Token
-$.blackbox = ($.isNode() ? process.env['TUHU_BLACKBOX'] : $.getdata('tuhu_blackbox')) || 'kMPSQ1710898198mf9JVT5oKB5';  // blackbox
+$.blackbox = ($.isNode() ? process.env['TUHU_BLACKBOX'] : $.getdata('tuhu_blackbox')) || 'oMPHt1740984643bcCiLCDaUub';  // blackbox
 $.tokenArr = $.toObj($.token) || [];
 $.appid = 'wx27d20205249c56a3';  // 小程序 appId
-$.messages = [];
 
+$.luflyKey = ($.isNode() ? process.env['luflytoken'] : $.getdata('luflytoken')) || '';
+$.wxCodeServerUrl = ($.isNode() ? process.env['CODESERVER_ADDRESS'] : $.getdata('codeserver_address')) || 'http://w.smallfawn.top:5789';
+$.strSplitor = '#';
+
+$.messages = [];
 
 // 主函数
 async function main() {
@@ -180,12 +184,15 @@ async function checkin(suffix, name) {
   let msg = '';
   // 构造请求
   let opt = {
-    url: `https://api.tuhu.cn/user/UserCheckInVersion1${suffix}`,
+    url: `https://cl-gateway.tuhu.cn/cl-common-api/api/dailyCheckIn/userCheckIn`,
     headers: {
       'Authorization': $.token,
       'Content-Type': 'application/json',
       'blackbox': $.blackbox
-    }
+    },
+    body: $.toStr({
+      channel: "WXAPP",
+    })
   };
 
   var result = await Request(opt);
@@ -256,25 +263,45 @@ function GetCookie() {
   }
 }
 
-
 // 获取微信 Code
 async function getWxCode() {
   try {
-    $.codeList = [];
-    $.codeServer = ($.isNode() ? process.env["CODESERVER_ADDRESS"] : $.getdata("@codeServer.address")) || '';
-    $.codeFuc = ($.isNode() ? process.env["CODESERVER_FUN"] : $.getdata("@codeServer.fun")) || '';
-    if (!$.codeServer) return $.log(`⚠️ 未配置微信 Code Server。`);
+    const fetch = (await import('node-fetch')).default;
 
-    $.codeList = ($.codeFuc
-      ? (eval($.codeFuc), await WxCode($.appid))
-      : (await Request(`${$.codeServer}/?wxappid=${$.appid}`))?.split("|"))
-      .filter(item => item.length === 32);
-    $.log(`♻️ 获取到 ${$.codeList.length} 个微信 Code:\n${$.codeList}`);
+    $.codeList = [];
+    let wxidList = ($.is_debug ? (process.env['wxtuhuwxid'] || 'wxid_ayyj7ljac3aa22') : '').split($.strSplitor).filter(wxid => wxid);
+
+    for (let wxid of wxidList) {  // 遍历用户列表
+      // 构造请求参数
+      const options = {
+        url: `${$.wxCodeServerUrl}/api/getcode`,
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        body: $.toStr({ "luflyKey": $.luflyKey, "wxid": wxid, "appid": $.appid }),
+      };
+
+      // 发起请求
+      const response = await fetch(options.url, {
+        method: options.method,
+        body: options.body,
+        headers: options.headers,
+      });
+      const result = await response.json();
+
+      if (result && result.status) {
+        let code = result.data;
+        $.codeList.push(code);
+        // $.wx_code = code;
+        $.log(`获取 code 成功`);
+      } else {
+        $.log(`❌ 获取 code 失败: ${$.toStr(result)}`);
+      }
+    }
+    $.log(`♻️ 共获取到 ${$.codeList.length} 个微信 Code: ${$.codeList}`);
   } catch (e) {
-    $.logErr(`❌ 获取微信 Code 失败！`);
+    $.logErr(`❌ 获取微信 Code 失败！`, e);
   }
 }
-
 
 /**
  * 数据脱敏
