@@ -266,10 +266,8 @@ function GetCookie() {
 // 获取微信 Code
 async function getWxCode() {
   try {
-    const fetch = (await import('node-fetch')).default;
-
     $.codeList = [];
-    let wxidList = ($.is_debug ? (process.env['wxtuhuwxid'] || 'wxid_ayyj7ljac3aa22') : '').split($.strSplitor).filter(wxid => wxid);
+    let wxidList = ($.is_debug ? (process.env['wxtuhuwxid'] || '') : '').split($.strSplitor).filter(wxid => wxid);
 
     for (let wxid of wxidList) {  // 遍历用户列表
       // 构造请求参数
@@ -281,17 +279,10 @@ async function getWxCode() {
       };
 
       // 发起请求
-      const response = await fetch(options.url, {
-        method: options.method,
-        body: options.body,
-        headers: options.headers,
-      });
-      const result = await response.json();
-
+      const result = await Request(options);
       if (result && result.status) {
         let code = result.data;
         $.codeList.push(code);
-        // $.wx_code = code;
         $.log(`获取 code 成功`);
       } else {
         $.log(`❌ 获取 code 失败: ${$.toStr(result)}`);
