@@ -73,6 +73,8 @@ $.luflyKey = ($.isNode() ? process.env['luflytoken'] : $.getdata('luflytoken')) 
 $.wxCodeServerUrl = ($.isNode() ? process.env['CODESERVER_ADDRESS'] : $.getdata('codeserver_address')) || 'http://w.smallfawn.top:5789';
 $.strSplitor = '#';
 
+$.wxid = ($.isNode() ? process.env['wxtuhuwxid'] : $.getdata('wxtuhuwxid')) || '';
+
 $.messages = [];
 
 // 主函数
@@ -140,7 +142,7 @@ async function getToken() {
 
   // 发起请求
   const result = await Request(options)
-  if (result?.code == "10000") {
+  if (result?.code == 10000) {
     const { mobile, userSession, userId, userName, nickName } = result.data;
     $.token = userSession;
     $.log(`✅ 成功获取 Token`);
@@ -187,6 +189,7 @@ async function checkin(suffix, name) {
     url: `https://cl-gateway.tuhu.cn/cl-common-api/api/dailyCheckIn/userCheckIn`,
     headers: {
       'Authorization': $.token,
+      'authType': 'oauth',
       'Content-Type': 'application/json',
       'blackbox': $.blackbox
     },
@@ -196,8 +199,8 @@ async function checkin(suffix, name) {
   };
 
   var result = await Request(opt);
-  if (result?.Code == 1) {
-    msg += `${name}任务: 签到成功, 积分 +${result.AddIntegral}, 连续签到: ${result.NeedDays}/7天 ✅`;
+  if (result?.Code == 10000 && result?.checkInResult) {
+    msg += `${name}任务: 签到成功, 积分 +${result.rewardIntegral}, 连续签到: ${result.continuousDays}/7天 ✅`;
   } else {
     msg += `${name}任务: 签到失败, ${result?.Message || $.toStr(result)}`;
   }
@@ -267,7 +270,8 @@ function GetCookie() {
 async function getWxCode() {
   try {
     $.codeList = [];
-    let wxidList = ($.is_debug ? (process.env['wxtuhuwxid'] || '') : '').split($.strSplitor).filter(wxid => wxid);
+
+    let wxidList = $.wxid.split($.strSplitor).filter(wxid => wxid);
 
     for (let wxid of wxidList) {  // 遍历用户列表
       // 构造请求参数
