@@ -63,7 +63,7 @@ script-providers:
  */
 
 const $ = new Env('途虎养车');
-$.is_debug = ($.isNode() ? process.env['IS_DEDUG'] : $.getdata('is_debug')) || 'true';  // 调试模式
+$.is_debug = ($.isNode() ? process.env['IS_DEDUG'] : $.getdata('is_debug')) || 'false';  // 调试模式
 $.token = ($.isNode() ? process.env['TUHU_TOKEN'] : $.getdata('tuhu_token')) || '';  // Token
 $.blackbox = ($.isNode() ? process.env['TUHU_BLACKBOX'] : $.getdata('tuhu_blackbox')) || 'oMPHt1740984643bcCiLCDaUub';  // blackbox
 $.tokenArr = $.toObj($.token) || [];
@@ -142,7 +142,7 @@ async function getToken() {
 
   // 发起请求
   const result = await Request(options)
-  if (result?.code == 10000) {
+  if (Number(result?.code) === 10000) {
     const { mobile, userSession, userId, userName, nickName } = result.data;
     $.token = userSession;
     $.log(`✅ 成功获取 Token`);
@@ -168,7 +168,7 @@ async function whoami() {
 
   // 发起请求
   const result = await Request(options);
-  if (result?.code == 10000 && result?.data) {
+  if (Number(result?.code) === 10000 && result?.data) {
     const { nickName, mobile } = result.data;
     msg += `\n当前用户: ${nickName}`;
   } else if (/token无效/.test($.toStr(result))) {
@@ -199,7 +199,7 @@ async function checkin(suffix, name) {
   };
 
   var result = await Request(opt);
-  if (result?.Code == 10000 && result?.checkInResult) {
+  if (Number(result?.Code) === 10000 && result?.checkInResult) {
     msg += `${name}任务: 签到成功, 积分 +${result.rewardIntegral}, 连续签到: ${result.continuousDays}/7天 ✅`;
   } else {
     msg += `${name}任务: 签到失败, ${result?.Message || $.toStr(result)}`;
@@ -222,7 +222,7 @@ async function getIntegral() {
 
   // 发起请求
   const result = await Request(options);
-  if (result?.Code == 1) {
+  if (Number(result?.Code) === 1) {
     msg += `查询积分: ${result.IntegralNumber} 分, 可抵现: ${result.IntegralNumber / 100} 元`;
   } else {
     msg += `❌ 积分查询失败`;
