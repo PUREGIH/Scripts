@@ -69,7 +69,7 @@ $.blackbox = ($.isNode() ? process.env['TUHU_BLACKBOX'] : $.getdata('tuhu_blackb
 $.tokenArr = $.toObj($.token) || [];
 $.appid = 'wx27d20205249c56a3';  // 小程序 appId
 
-$.wxCodeServerUrl = ($.isNode() ? process.env['CODESERVER_ADDRESS'] : $.getdata('codeserver_address')) || '';
+$.wxCodeServerUrl = ($.isNode() ? process.env['wxcenter'] : $.getdata('wxcenter')) || '';
 $.strSplitor = '#';
 
 $.wxid = ($.isNode() ? process.env['wxid_tuhu'] : $.getdata('wxid_tuhu')) || '';
