@@ -283,10 +283,12 @@ async function getWxCode() {
 
       // 发起请求
       const result = await Request(options);
-      if (result && result.status) {
+      if (result.Success) {
         let code = result.Data.code;
-        $.codeList.push(code);
-        $.log(`获取 code 成功`);
+        if (code){
+          $.codeList.push(code);
+          $.log(`✅ 获取 code 成功`);
+        }
       } else {
         $.log(`❌ 获取 code 失败: ${$.toStr(result)}`);
       }
