@@ -69,11 +69,10 @@ $.blackbox = ($.isNode() ? process.env['TUHU_BLACKBOX'] : $.getdata('tuhu_blackb
 $.tokenArr = $.toObj($.token) || [];
 $.appid = 'wx27d20205249c56a3';  // 小程序 appId
 
-$.luflyKey = ($.isNode() ? process.env['luflytoken'] : $.getdata('luflytoken')) || '';
-$.wxCodeServerUrl = ($.isNode() ? process.env['CODESERVER_ADDRESS'] : $.getdata('codeserver_address')) || 'http://w.smallfawn.top:5789';
+$.wxCodeServerUrl = ($.isNode() ? process.env['CODESERVER_ADDRESS'] : $.getdata('codeserver_address')) || '';
 $.strSplitor = '#';
 
-$.wxid = ($.isNode() ? process.env['wxtuhuwxid'] : $.getdata('wxtuhuwxid')) || '';
+$.wxid = ($.isNode() ? process.env['wxid_tuhu'] : $.getdata('wxid_tuhu')) || '';
 
 $.messages = [];
 
@@ -276,16 +275,16 @@ async function getWxCode() {
     for (let wxid of wxidList) {  // 遍历用户列表
       // 构造请求参数
       const options = {
-        url: `${$.wxCodeServerUrl}/api/getcode`,
+        url: `${$.wxCodeServerUrl}/api/wxapp/JSLogin`,
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
-        body: $.toStr({ "luflyKey": $.luflyKey, "wxid": wxid, "appid": $.appid }),
+        body: $.toStr({ "wxid": wxid, "appid": $.appid }),
       };
 
       // 发起请求
       const result = await Request(options);
       if (result && result.status) {
-        let code = result.data;
+        let code = result.Data.code;
         $.codeList.push(code);
         $.log(`获取 code 成功`);
       } else {
