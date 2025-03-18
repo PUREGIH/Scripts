@@ -197,9 +197,9 @@ async function checkin(suffix, name) {
     })
   };
 
-  var result = await Request(opt);
+  let result = await Request(opt);
   if (Number(result?.code) === 10000) {
-    msg += `${name}任务: 签到成功, 积分 +${result.rewardIntegral}, 连续签到: ${result.continuousDays}/7天 ✅`;
+    msg += `${name}任务: 签到成功, 积分 +${result.data?.rewardIntegral}, 连续签到: ${result.data?.continuousDays}/7天 ✅`;
   } else {
     msg += `${name}任务: 签到失败, ${result?.Message || $.toStr(result)}`;
   }
