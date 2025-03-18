@@ -269,8 +269,9 @@ function GetCookie() {
 async function getWxCode() {
   try {
     $.codeList = [];
-
+    if (!$.wxCodeServerUrl) return $.log(`⚠️ 未配置微信 Code Server。`);
     let wxidList = $.wxid.split($.strSplitor).filter(wxid => wxid);
+    if (wxidList.length === 0) return $.log(`⚠️ 没有有效的微信 ID。`);
 
     for (let wxid of wxidList) {  // 遍历用户列表
       // 构造请求参数
@@ -285,10 +286,8 @@ async function getWxCode() {
       const result = await Request(options);
       if (result.Success) {
         let code = result.Data.code;
-        if (code){
-          $.codeList.push(code);
-          $.log(`✅ 获取 code 成功`);
-        }
+        $.codeList.push(code);
+        $.log(`✅ 获取 code 成功`);
       } else {
         $.log(`❌ 获取 code 失败: ${$.toStr(result)}`);
       }
