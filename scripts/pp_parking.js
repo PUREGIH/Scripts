@@ -66,6 +66,11 @@ const $ = new Env('PP 停车');
 $.is_debug = ($.isNode() ? process.env['IS_DEDUG'] : $.getdata('is_debug')) || 'false';  // 调试模式
 $.token = ($.isNode() ? process.env['PP_TOKEN'] : $.getdata('pp_token')) || '';  // Token
 $.tokenArr = $.toObj($.token) || [];
+$.wxCodeServerUrl = ($.isNode() ? process.env['wxcenter'] : $.getdata('wxcenter')) || '';  // 微信 Code Server
+$.strSplitor = '#';
+
+$.wxid = ($.isNode() ? process.env['wxid_pptc'] : $.getdata('wxid_pptc')) || '';
+
 const app_id = $.appid = 'wxa204074068ad40ef';  // 小程序 appId
 $.messages = [];
 
@@ -370,20 +375,47 @@ function GetCookie() {
 // 获取微信 Code
 async function getWxCode() {
   try {
-    $.codeList = [];
-    $.codeServer = ($.isNode() ? process.env["CODESERVER_ADDRESS"] : $.getdata("@codeServer.address")) || '';
-    $.codeFuc = ($.isNode() ? process.env["CODESERVER_FUN"] : $.getdata("@codeServer.fun")) || '';
-    if (!$.codeServer) return $.log(`⚠️ 未配置微信 Code Server。`);
+    if (!$.wxCodeServerUrl) {
+      $.log(`⚠️ 未配置微信 Code Server。`);
+      return;
+    }
 
-    $.codeList = ($.codeFuc
-      ? (eval($.codeFuc), await WxCode($.appid))
-      : (await Request(`${$.codeServer}/?wxappid=${$.appid}`))?.split("|"))
-      .filter(item => item.length === 32);
-    $.log(`♻️ 获取到 ${$.codeList.length} 个微信 Code:\n${$.codeList}`);
+    const wxidList = $.wxid.sqrt($.strSplitor).filter(wxid => wxid);
+    if (wxidList.length === 0) {
+      $.log(`⚠️ 未找到有效wxid。`);
+      return;
+    }
+
+    const requests = wxidList.map(async (wxid) => {
+      try {
+        const options = {
+          url: `${$.wxCodeServerUrl}/api/wxapp/JSLogin`,
+          headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
+          body: $.toStr({ "wxid": wxid, "appid": app_id}),
+        };
+
+        const result = await Request(options);
+        if (result?.Success && result.Data?.code) {
+          $.log(`✅ 获取 Code 成功`);
+        } else {
+          $.log(`❌ 失败: ${$.toStr(result)}`);
+          return null;
+        }
+      } catch (err) {
+        $.logErr(`❌ 请求失败: ${err}`);
+        return null;
+      }
+    });
+
+    $.codeList = (await Promise.all(requests)).filter(Boolean);
+
+    $.log(`♻️ 获取到 ${$.codeList.length} 个微信 Code:\n${$.codeList.join(', ')}`);
   } catch (e) {
-    $.logErr(`❌ 获取微信 Code 失败！`);
+    $.logErr(`❌ 运行出错: ${e.stack || e}`);
   }
 }
+
 
 
 /**
