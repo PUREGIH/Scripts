@@ -66,10 +66,10 @@ const $ = new Env('PP 停车');
 $.is_debug = ($.isNode() ? process.env['IS_DEDUG'] : $.getdata('is_debug')) || 'false';  // 调试模式
 $.token = ($.isNode() ? process.env['PP_TOKEN'] : $.getdata('pp_token')) || '';  // Token
 $.tokenArr = $.toObj($.token) || [];
-$.wxCodeServerUrl = ($.isNode() ? process.env['wxcenter'] : $.getdata('wxcenter')) || 'https://wxcode.0011024.xyz';  // 微信 Code Server
+$.wxCodeServerUrl = ($.isNode() ? process.env['wxcenter'] : $.getdata('wxcenter')) || '';  // 微信 Code Server
 $.strSplitor = '#';
 
-$.wxid = ($.isNode() ? process.env['wxid_pptc'] : $.getdata('wxid_pptc')) || 'wxid_ayyj7ljac3aa22';
+$.wxid = ($.isNode() ? process.env['wxid_pptc'] : $.getdata('wxid_pptc')) || '';
 
 const app_id = $.appid = 'wxa204074068ad40ef';  // 小程序 appId
 $.messages = [];
