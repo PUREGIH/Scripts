@@ -1095,8 +1095,8 @@
         "wechat_pay_version",
         "wechat_pay_exchange",
         "wechat_pay_exchange_award",
-        "luflytoken",
-        "CODESERVER_ADDRESS"
+        "wxid_paycoupon",
+        "wxcenter"
       ],
       "settings": [
         {
@@ -1137,12 +1137,20 @@
           "desc": "兑换立减金"
         },
         {
-          "id": "luflytoken",
-          "name": "luflytoken",
+          "id": "wxid_paycoupon",
+          "name": "wxid_paycoupon",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "wxcenter",
+          "name": "wxcenter",
           "val": "",
           "type": "text",
           "desc": ""
         }
+
       ]
     },
     {
