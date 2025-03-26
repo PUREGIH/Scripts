@@ -76,8 +76,9 @@ $.appid = 'wxe73c2db202c7eebf';  // 小程序 appId
 $.exchangeList = [];  // 兑换列表
 $.Messages = [];
 
-$.luflyKey = getEnv('luflytoken') || '';
-$.wxCodeServerUrl = getEnv('CODESERVER_ADDRESS') || 'http://w.smallfawn.top:5789';
+$.wxCodeServerUrl = getEnv('wxcenter') || '';
+
+$.wxid = getEnv('wxid_paycoupon') || '';
 $.strSplitor = '#';
 
 // 主函数
@@ -484,24 +485,24 @@ function getEnv(...keys) {
 async function getWxCode() {
   try {
     $.codeList = [];
-    let wxidList = $.is_debug
-        ? (getEnv('wxpaycouponwxid') || 'wxid_ayyj7ljac3aa22').split($.strSplitor).filter(wxid => wxid)
-        : [];
+    if (!$.wxCodeServerUrl) return $.log(`⚠️ 未配置微信 Code Server。`);
+    let wxidList = $.wxid.split($.strSplitor).filter(wxid => wxid);
+    if (wxidList.length === 0) return $.log(`⚠️ 没有有效的微信 ID。`);
 
     for (let wxid of wxidList) {  // 遍历用户列表
       // 构造请求参数
       const options = {
-        url: `${$.wxCodeServerUrl}/api/getcode`,
+        url: `${$.wxCodeServerUrl}/api/wxapp/JSLogin`,
         headers: { 'Content-Type': 'application/json' },
-        body: $.toStr({ "luflyKey": $.luflyKey, "wxid": wxid, "appid": $.appid }),
+        body: $.toStr({ "wxid": wxid, "appid": $.appid }),
       };
 
       // 发起请求
       const result = await Request(options);
-      if (result && result.status) {
-        let code = result.data;
+      if (result.Success) {
+        let code = result.Data.code;
         $.codeList.push(code);
-        $.log(`获取 code 成功`);
+        $.log(`✅ 获取 code 成功`);
       } else {
         $.log(`❌ 获取 code 失败: ${$.toStr(result)}`);
       }
